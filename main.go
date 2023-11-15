@@ -57,8 +57,6 @@ func main() {
 	api.HandleFunc("/historyPerbaikan/update/{id}", reporthistoryperbaikancontroller.Update).Methods("PUT")
 	api.HandleFunc("/historyPerbaikan/delete/{id}", reporthistoryperbaikancontroller.Delete).Methods("DELETE")
 
-
-
 	api.HandleFunc("/room", roomcontroller.Index).Methods("GET")
 	api.HandleFunc("/room/show/{id_ruangan}", roomcontroller.Show).Methods("GET")
 	api.HandleFunc("/room", roomcontroller.Create).Methods("POST")

@@ -16,7 +16,6 @@ import (
 )
 
 func Login(w http.ResponseWriter, r *http.Request) {
-
 	// mengambil inputan json
 	var userInput models.User
 	decoder := json.NewDecoder(r.Body)
@@ -49,7 +48,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	
     // proses pembuatan token jwt
     expTime := time.Now().Add(24 * time.Hour) // Set expiration to 24 hours
     claims := &config.JWTClaim{

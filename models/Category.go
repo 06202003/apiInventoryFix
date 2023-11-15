@@ -1,6 +1,5 @@
 package models
 
-
 type Category struct {
 	ID        string    `gorm:"column:id_kategori;type:varchar(3);primaryKey" json:"id_kategori"`
 	Name      string    `gorm:"column:nama;type:varchar(100)" json:"nama"`

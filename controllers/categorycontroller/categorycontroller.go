@@ -6,18 +6,23 @@ import (
 
 	"github.com/06202003/apiInventory/helper"
 	"github.com/06202003/apiInventory/models"
-	"github.com/gin-gonic/gin"
 	"github.com/gorilla/mux"
 )
 
-func Index(w http.ResponseWriter, r *http.Request) {
-    var categories []models.Category
-    models.DB.Find(&categories)
+// func Index(w http.ResponseWriter, r *http.Request) {
+//     var categories []models.Category
+//     models.DB.Find(&categories)
 
-    // Your existing response logic here
-    w.WriteHeader(http.StatusOK)
-    w.Header().Set("Content-Type", "application/json")
-    helper.ResponseJSON(w, http.StatusOK, gin.H{"categories": categories})
+//     // Your existing response logic here
+//     w.WriteHeader(http.StatusOK)
+//     w.Header().Set("Content-Type", "application/json")
+//     helper.ResponseJSON(w, http.StatusOK, gin.H{"categories": categories})
+// }
+
+func Index(w http.ResponseWriter, r *http.Request) {
+	var categories []models.Category
+	models.DB.Find(&categories)
+	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"categories": categories})
 }
 
 
