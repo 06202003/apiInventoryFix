@@ -15,74 +15,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// func Login(w http.ResponseWriter, r *http.Request) {
-// 	// mengambil inputan json
-// 	var userInput models.User
-// 	decoder := json.NewDecoder(r.Body)
-// 	if err := decoder.Decode(&userInput); err != nil {
-// 		response := map[string]string{"message": err.Error()}
-// 		helper.ResponseJSON(w, http.StatusBadRequest, response)
-// 		return
-// 	}
-// 	defer r.Body.Close()
-
-// 	// ambil data user berdasarkan Email
-// 	var user models.User
-// 	if err := models.DB.Where("Email = ?", userInput.Email).First(&user).Error; err != nil {
-// 		switch err {
-// 		case gorm.ErrRecordNotFound:
-// 			response := map[string]string{"message": "Email atau password salah"}
-// 			helper.ResponseJSON(w, http.StatusUnauthorized, response)
-// 			return
-// 		default:
-// 			response := map[string]string{"message": err.Error()}
-// 			helper.ResponseJSON(w, http.StatusInternalServerError, response)
-// 			return
-// 		}
-// 	}
-
-// 	// cek apakah password valid
-// 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userInput.Password)); err != nil {
-// 		response := map[string]string{"message": "Email atau password salah"}
-// 		helper.ResponseJSON(w, http.StatusUnauthorized, response)
-// 		return
-// 	}
-
-//     // proses pembuatan token jwt
-//     expTime := time.Now().Add(24 * time.Hour) // Set expiration to 24 hours
-//     claims := &config.JWTClaim{
-//         Email: user.Email,
-//         StandardClaims: jwt.StandardClaims{
-//             Issuer:    "go-jwt-mux",
-//             ExpiresAt: expTime.Unix(),
-//         },
-//     }
-
-//     // medeklarasikan algoritma yang akan digunakan untuk signing
-//     tokenAlgo := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-//     // signed token
-//     token, err := tokenAlgo.SignedString(config.JWT_KEY)
-//     if err != nil {
-//         response := map[string]string{"message": err.Error()}
-//         helper.ResponseJSON(w, http.StatusInternalServerError, response)
-//         return
-//     }
-
-//     // set token ke cookie
-//     http.SetCookie(w, &http.Cookie{
-//         Name:     "token",
-//         Path:     "/",
-//         Value:    token,
-//         HttpOnly: true,
-// 		MaxAge:   24 * 60 * 60,
-//     })
-
-//     response := map[string]string{"message": "login berhasil"}
-//     helper.ResponseJSON(w, http.StatusOK, response)
-// }
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	// mengambil inputan json
+	// retrieve json input
 	var userInput models.User
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&userInput); err != nil {
@@ -92,12 +27,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	// ambil data user berdasarkan Email
+	// retrieve user data based on Email and verify if the entered email matches the stored email 
 	var user models.User
 	if err := models.DB.Where("Email = ?", userInput.Email).First(&user).Error; err != nil {
 		switch err {
 		case gorm.ErrRecordNotFound:
-			response := map[string]string{"message": "Email atau password salah"}
+			response := map[string]string{"message": "Email atau password salah"} //bisa aja email salah
 			helper.ResponseJSON(w, http.StatusUnauthorized, response)
 			return
 		default:
@@ -115,7 +50,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	// verify if the entered password matches the stored hashed password
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(passwordWithSalt)); err != nil {
-		response := map[string]string{"message": "Email atau password salah"}
+		response := map[string]string{"message": "Email atau password salah"} //bisa aja password salah
 		helper.ResponseJSON(w, http.StatusUnauthorized, response)
 		return
 	}
