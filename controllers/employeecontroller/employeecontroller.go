@@ -36,7 +36,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	models.DB.Create(&employee)
-	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"employee": employee})
+	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data Berhasil Dibuat"})
 }
 
 func Update(w http.ResponseWriter, r *http.Request) {

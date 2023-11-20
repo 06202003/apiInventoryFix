@@ -65,7 +65,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	// medeklarasikan algoritma yang akan digunakan untuk signing
+	// declares the algorithm that will be used for signing
 	tokenAlgo := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	// signed token
 	token, err := tokenAlgo.SignedString(config.JWT_KEY)
@@ -90,7 +90,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 
 func Register(w http.ResponseWriter, r *http.Request) {
-	// mengambil inputan json
+	// retrieve json input
 	var userInput models.User
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&userInput); err != nil {
@@ -124,13 +124,13 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := map[string]string{"message": "success"}
+	response := map[string]string{"message": "Sukses membuat akun"}
 	helper.ResponseJSON(w, http.StatusOK, response)
 }
 
 
 func Logout(w http.ResponseWriter, r *http.Request) {
-	// hapus token yang ada di cookie
+	// delete the token in the cookie
 	http.SetCookie(w, &http.Cookie{
 		Name:     "token",
 		Path:     "/",

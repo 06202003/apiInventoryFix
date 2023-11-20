@@ -20,7 +20,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id_ruangan"]
 
 	if err := models.DB.First(&room, "id_ruangan = ?", id).Error; err != nil {
-		helper.ResponseJSON(w, http.StatusNotFound, map[string]string{"message": "Room not found"})
+		helper.ResponseJSON(w, http.StatusNotFound, map[string]string{"message": "Ruangan tidak ditemukan"})
 		return
 	}
 
@@ -36,7 +36,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	models.DB.Create(&room)
-	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"room": room})
+	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data Berhasil Dibuat"})
 }
 
 func Update(w http.ResponseWriter, r *http.Request) {
@@ -49,11 +49,11 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if models.DB.Model(&models.Room{}).Where("id_ruangan = ?", id).Updates(&room).RowsAffected == 0 {
-		helper.ResponseJSON(w, http.StatusBadRequest, map[string]string{"message": "Failed to update room"})
+		helper.ResponseJSON(w, http.StatusBadRequest, map[string]string{"message": "Gagal memperbarui ruangan"})
 		return
 	}
 
-	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data updated successfully"})
+	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data berhasil diperbarui"})
 }
 
 func Delete(w http.ResponseWriter, r *http.Request) {
@@ -62,15 +62,15 @@ func Delete(w http.ResponseWriter, r *http.Request) {
     // Check if the room exists
     var existingRoom models.Room
     if err := models.DB.First(&existingRoom, "id_ruangan = ?", id).Error; err != nil {
-        helper.ResponseJSON(w, http.StatusNotFound, map[string]string{"message": "Room not found"})
+        helper.ResponseJSON(w, http.StatusNotFound, map[string]string{"message": "Ruangan tidak ditemukan"})
         return
     }
 
     // Delete the room with the specified ID
     if err := models.DB.Where("id_ruangan = ?", id).Delete(&existingRoom).Error; err != nil {
-        helper.ResponseJSON(w, http.StatusInternalServerError, map[string]string{"message": "Failed to delete room"})
+        helper.ResponseJSON(w, http.StatusInternalServerError, map[string]string{"message": "Gagal menghapus ruangan"})
         return
     }
 
-    helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data deleted successfully"})
+    helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data berhasil dihapus"})
 }

@@ -13,7 +13,6 @@ import (
 	"github.com/06202003/apiInventory/controllers/inventorycontroller"
 	"github.com/06202003/apiInventory/controllers/reporthistorypemakaiancontroller"
 	"github.com/06202003/apiInventory/controllers/reporthistoryperbaikancontroller"
-	"github.com/06202003/apiInventory/controllers/usagecontroller"
 	"github.com/06202003/apiInventory/models"
 
 	"github.com/gorilla/mux"
@@ -63,11 +62,7 @@ func main() {
 	api.HandleFunc("/room/update/{id_ruangan}", roomcontroller.Update).Methods("PUT")
 	api.HandleFunc("/room/delete/{id_ruangan}", roomcontroller.Delete).Methods("DELETE")
 
-	api.HandleFunc("/usage", usagecontroller.Index).Methods("GET")
-	api.HandleFunc("/usage/show/{id_pemakaian}", usagecontroller.Show).Methods("GET")
-	api.HandleFunc("/usage", usagecontroller.Create).Methods("POST")
-	api.HandleFunc("/usage/update/{id_pemakaian}", usagecontroller.Update).Methods("PUT")
-	api.HandleFunc("/usage/delete/{id_pemakaian}", usagecontroller.Delete).Methods("DELETE")
+
 
 
 	api.Use(middlewares.JWTMiddleware)

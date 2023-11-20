@@ -24,7 +24,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 
 	if err := models.DB.Preload("Inventory").Preload("Inventory.Category").Preload("Inventory.Employee").First(&reportHistory, id).Error; err != nil {
-		helper.ResponseJSON(w, http.StatusNotFound, map[string]string{"message": "Data tidak ditemukan"})
+		helper.ResponseJSON(w, http.StatusNotFound, map[string]string{"message": "history perbaikan tidak ditemukan"})
 		return
 	}
 
@@ -40,11 +40,11 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := models.DB.Create(&reportHistoryPerbaikan).Error; err != nil {
-		helper.ResponseJSON(w, http.StatusInternalServerError, map[string]string{"message": "Gagal membuat data"})
+		helper.ResponseJSON(w, http.StatusInternalServerError, map[string]string{"message": "Gagal membuat history perbaikan"})
 		return
 	}
 
-	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"ReportHistoryPerbaikan": reportHistoryPerbaikan})
+	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data Berhasil Dibuat"})
 }
 
 func Update(w http.ResponseWriter, r *http.Request) {
@@ -57,11 +57,11 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := models.DB.Model(&reportHistoryPerbaikan).Where("id = ?", id).Updates(&reportHistoryPerbaikan).Error; err != nil {
-		helper.ResponseJSON(w, http.StatusBadRequest, map[string]string{"message": "Gagal mengupdate data"})
+		helper.ResponseJSON(w, http.StatusBadRequest, map[string]string{"message": "Gagal memperbarui history perbaikan"})
 		return
 	}
 
-	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data berhasil diupdate"})
+	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data berhasil diperbarui"})
 }
 
 func Delete(w http.ResponseWriter, r *http.Request) {
@@ -74,7 +74,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := models.DB.Delete(&reportHistoryPerbaikan).Error; err != nil {
-		helper.ResponseJSON(w, http.StatusInternalServerError, map[string]string{"message": "Gagal menghapus data"})
+		helper.ResponseJSON(w, http.StatusInternalServerError, map[string]string{"message": "Gagal menghapus history perbaikan"})
 		return
 	}
 

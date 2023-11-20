@@ -3,7 +3,7 @@ package models
 
 
 type ReportHistoryPemakaian struct {
-	IdHistory               int64       `gorm:"column:id;" json:"id"`
+	IdHistory               int64       `gorm:"column:id;autoIncrement" json:"id"`
 	OldEmployeeID    string    `gorm:"column:nomor_induk_old;type:varchar(45)" json:"nomor_induk_old"`
 	NewEmployeeID    string    `gorm:"column:nomor_induk_new;type:varchar(45)" json:"nomor_induk_new"`
 	UsageDate        string`gorm:"column:tanggal" json:"tanggal"`

@@ -62,7 +62,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
     }
 
     // Responding with the created category in the JSON format
-    helper.ResponseJSON(w, http.StatusCreated, map[string]interface{}{"category": category})
+    helper.ResponseJSON(w, http.StatusCreated, map[string]interface{}{"message": "Data Berhasil Dibuat"})
 }
 
 
