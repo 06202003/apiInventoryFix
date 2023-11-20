@@ -30,40 +30,37 @@ func main() {
 	api := r.PathPrefix("/api").Subrouter()
 	
 	api.HandleFunc("/categories", categorycontroller.Index).Methods("GET")
-	api.HandleFunc("/categories/show/{id_kategori}", categorycontroller.Show).Methods("GET")
+	api.HandleFunc("/categories/{id_kategori}", categorycontroller.Show).Methods("GET")
 	api.HandleFunc("/categories", categorycontroller.Create).Methods("POST")
-	api.HandleFunc("/categories/update/{id_kategori}", categorycontroller.Update).Methods("PUT")
-	api.HandleFunc("/categories/delete/{id_kategori}", categorycontroller.Delete).Methods("DELETE")
+	api.HandleFunc("/categories/{id_kategori}", categorycontroller.Update).Methods("PUT")
+	api.HandleFunc("/categories/{id_kategori}", categorycontroller.Delete).Methods("DELETE")
 
 	api.HandleFunc("/employees", employeecontroller.Index).Methods("GET")
-	api.HandleFunc("/employees/show/{nomor_induk}", employeecontroller.Show).Methods("GET")
+	api.HandleFunc("/employees/{nomor_induk}", employeecontroller.Show).Methods("GET")
 	api.HandleFunc("/employees", employeecontroller.Create).Methods("POST")
-	api.HandleFunc("/employees/update/{nomor_induk}", employeecontroller.Update).Methods("PUT")
-	api.HandleFunc("/employees/delete/{nomor_induk}", employeecontroller.Delete).Methods("DELETE")
+	api.HandleFunc("/employees/{nomor_induk}", employeecontroller.Update).Methods("PUT")
+	api.HandleFunc("/employees/{nomor_induk}", employeecontroller.Delete).Methods("DELETE")
 
-	api.HandleFunc("/inventory", inventorycontroller.Index).Methods("GET")
-	api.HandleFunc("/inventory/show/{kode_aset}", inventorycontroller.Show).Methods("GET")
-	api.HandleFunc("/inventory", inventorycontroller.Create).Methods("POST")
-	api.HandleFunc("/inventory/update/{kode_aset}", inventorycontroller.Update).Methods("PUT")
-	api.HandleFunc("/inventory/delete/{kode_aset}", inventorycontroller.Delete).Methods("DELETE")
+	api.HandleFunc("/inventories", inventorycontroller.Index).Methods("GET")
+	api.HandleFunc("/inventories/{kode_aset}", inventorycontroller.Show).Methods("GET")
+	api.HandleFunc("/inventories", inventorycontroller.Create).Methods("POST")
+	api.HandleFunc("/inventories/{kode_aset}", inventorycontroller.Update).Methods("PUT")
+	api.HandleFunc("/inventories/{kode_aset}", inventorycontroller.Delete).Methods("DELETE")
 
-	api.HandleFunc("/historyPemakaian", reporthistorypemakaiancontroller.Index).Methods("GET")
-	api.HandleFunc("/historyPemakaian/show/{id}", reporthistorypemakaiancontroller.Show).Methods("GET")
+	api.HandleFunc("/usageHistories", reporthistorypemakaiancontroller.Index).Methods("GET")
+	api.HandleFunc("/usageHistories/{id}", reporthistorypemakaiancontroller.Show).Methods("GET")
 
-	api.HandleFunc("/historyPerbaikan", reporthistoryperbaikancontroller.Index).Methods("GET")
-	api.HandleFunc("/historyPerbaikan/show/{id}", reporthistoryperbaikancontroller.Show).Methods("GET")
-	api.HandleFunc("/historyPerbaikan", reporthistoryperbaikancontroller.Create).Methods("POST")
-	api.HandleFunc("/historyPerbaikan/update/{id}", reporthistoryperbaikancontroller.Update).Methods("PUT")
-	api.HandleFunc("/historyPerbaikan/delete/{id}", reporthistoryperbaikancontroller.Delete).Methods("DELETE")
+	api.HandleFunc("/repairHistories", reporthistoryperbaikancontroller.Index).Methods("GET")
+	api.HandleFunc("/repairHistories/{id}", reporthistoryperbaikancontroller.Show).Methods("GET")
+	api.HandleFunc("/repairHistories", reporthistoryperbaikancontroller.Create).Methods("POST")
+	api.HandleFunc("/repairHistories/{id}", reporthistoryperbaikancontroller.Update).Methods("PUT")
+	api.HandleFunc("/repairHistories/{id}", reporthistoryperbaikancontroller.Delete).Methods("DELETE")
 
-	api.HandleFunc("/room", roomcontroller.Index).Methods("GET")
-	api.HandleFunc("/room/show/{id_ruangan}", roomcontroller.Show).Methods("GET")
-	api.HandleFunc("/room", roomcontroller.Create).Methods("POST")
-	api.HandleFunc("/room/update/{id_ruangan}", roomcontroller.Update).Methods("PUT")
-	api.HandleFunc("/room/delete/{id_ruangan}", roomcontroller.Delete).Methods("DELETE")
-
-
-
+	api.HandleFunc("/rooms", roomcontroller.Index).Methods("GET")
+	api.HandleFunc("/rooms/{id_ruangan}", roomcontroller.Show).Methods("GET")
+	api.HandleFunc("/rooms", roomcontroller.Create).Methods("POST")
+	api.HandleFunc("/rooms/{id_ruangan}", roomcontroller.Update).Methods("PUT")
+	api.HandleFunc("/rooms/{id_ruangan}", roomcontroller.Delete).Methods("DELETE")
 
 	api.Use(middlewares.JWTMiddleware)
 

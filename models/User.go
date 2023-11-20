@@ -6,5 +6,5 @@ type User struct {
 	Password string `gorm:"type:varchar(100)" json:"password"`
 	Status   string `gorm:"type:varchar(100)" json:"status"`
 	Nama     string `gorm:"type:varchar(100)" json:"nama"`
-	Salt     string `json:"salt"`
+	// Salt     string `json:"salt"`
 }
