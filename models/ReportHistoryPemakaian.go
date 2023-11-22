@@ -12,8 +12,8 @@ type ReportHistoryPemakaian struct {
 	CreatedAt        string `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt        string `gorm:"column:updated_at" json:"updated_at"`
 	
-	AssetCode 		 string `gorm:"column:kode_aset;type:varchar(20);primaryKey" json:"kode_aset"`
-    Inventory  Inventory `gorm:"foreignKey:AssetCode" json:"Inventory"`
+    IdPemakaian          string `gorm:"column:id_pemakaian;type:varchar(20);primaryKey" json:"id_pemakaian"`
+    Usage                Usage  `gorm:"foreignKey:IdPemakaian" json:"Usage"`
 }
 
 func (ReportHistoryPemakaian) TableName() string {

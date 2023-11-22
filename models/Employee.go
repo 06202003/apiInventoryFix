@@ -12,8 +12,8 @@ type Employee struct {
 	Position   string    `gorm:"column:jabatan;type:varchar(20)" json:"jabatan"`
 	Division   string    `gorm:"column:divisi;type:varchar(20)" json:"divisi"`
 	Address    string    `gorm:"column:alamat;type:varchar(255)" json:"alamat"`
-	CreatedAt string     `gorm:"column:created_at" json:"created_at"`
-	UpdatedAt string     `gorm:"column:updated_at" json:"updated_at"`
+	CreatedAt  string     `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt  string     `gorm:"column:updated_at" json:"updated_at"`
 }
 
 func (Employee) TableName() string {

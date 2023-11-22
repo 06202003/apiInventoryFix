@@ -22,16 +22,26 @@ func ConnectDatabase() {
 }
 
 func autoMigrateAllTables(db *gorm.DB) {
+
+    if err := db.AutoMigrate(&Category{}); err != nil {
+        panic(err)
+    }
+
+    
     // Define all the models
     models := []interface{}{
         &User{},
-        &Employee{},
         &Category{},
         &Inventory{},
+        &Location{},
+        &Room{},
+        &Usage{},
+        &Employee{},
         &ReportHistoryPemakaian{},
         &ReportHistoryPerbaikan{},
-        &Room{},
     }
+    
+
 
     // AutoMigrate all tables
     for _, model := range models {
@@ -39,4 +49,5 @@ func autoMigrateAllTables(db *gorm.DB) {
             panic(err)
         }
     }
+
 }

@@ -1,7 +1,7 @@
 package models
 
 type ReportHistoryPerbaikan struct {
-	ID                   int64       `gorm:"column:id;primaryKey" json:"id"`
+	ID                   int64       `gorm:"column:id;" json:"id"`
 	RepairDate           string `gorm:"column:tanggal_perbaikan" json:"tanggal_perbaikan"`
 	Cost                 int64       `gorm:"column:biaya" json:"biaya"`
 	Description          string    `gorm:"column:deskripsi;type:varchar(255)" json:"deskripsi"`
@@ -9,9 +9,10 @@ type ReportHistoryPerbaikan struct {
 	RepairCompletionDate string `gorm:"column:tanggal_selesai_perbaikan" json:"tanggal_selesai_perbaikan"`
 	CreatedAt            string `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt            string `gorm:"column:updated_at" json:"updated_at"`
-	AssetCode            string    `gorm:"column:kode_aset;type:varchar(20);primaryKey" json:"kode_aset"`
+	RepairPlace			 string `gorm:"column:tempat_perbaikan" json:"tempat_perbaikan"`	
 
-	Inventory Inventory `gorm:"foreignKey:AssetCode"`
+    IdPemakaian          string `gorm:"column:id_pemakaian;type:varchar(20);primaryKey" json:"id_pemakaian"`
+    Usage                Usage  `gorm:"foreignKey:IdPemakaian" json:"Usage"`
 }
 
 func (ReportHistoryPerbaikan) TableName() string {

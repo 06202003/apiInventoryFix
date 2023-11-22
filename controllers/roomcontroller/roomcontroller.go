@@ -3,7 +3,7 @@ package roomcontroller
 import (
 	"encoding/json"
 	"net/http"
-
+    "gorm.io/gorm"
 	"github.com/06202003/apiInventory/helper"
 	"github.com/06202003/apiInventory/models"
 	"github.com/gorilla/mux"
@@ -11,7 +11,11 @@ import (
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	var rooms []models.Room
-	models.DB.Find(&rooms)
+	models.DB.Debug().Preload("Location").Find(&rooms)
+	models.DB.Preload("Location", func(db *gorm.DB) *gorm.DB {
+		return db.Unscoped()
+	}).Find(&rooms)
+
 	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"rooms": rooms})
 }
 
@@ -19,7 +23,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	var room models.Room
 	id := mux.Vars(r)["id_ruangan"]
 
-	if err := models.DB.First(&room, "id_ruangan = ?", id).Error; err != nil {
+	if err := models.DB.Preload("Location").First(&room, "id_ruangan = ?", id).Error; err != nil {
 		helper.ResponseJSON(w, http.StatusNotFound, map[string]string{"message": "Ruangan tidak ditemukan"})
 		return
 	}
