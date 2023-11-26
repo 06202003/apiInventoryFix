@@ -16,7 +16,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"ReportHistories": reportHistories})
+	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"Perbaikan": reportHistories})
 }
 
 func Show(w http.ResponseWriter, r *http.Request) {
@@ -28,7 +28,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"ReportHistory": reportHistory})
+	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"Perbaikan": reportHistory})
 }
 
 func Create(w http.ResponseWriter, r *http.Request) {
@@ -44,7 +44,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data Berhasil Dibuat"})
+	helper.ResponseJSON(w, http.StatusCreated, map[string]interface{}{"message": "Data Berhasil Dibuat"})
 }
 
 func Update(w http.ResponseWriter, r *http.Request) {
@@ -61,7 +61,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data berhasil diperbarui"})
+	helper.ResponseJSON(w, http.StatusAccepted, map[string]interface{}{"message": "Data berhasil diperbarui"})
 }
 
 func Delete(w http.ResponseWriter, r *http.Request) {
@@ -78,6 +78,6 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data berhasil dihapus"})
+	helper.ResponseJSON(w, http.StatusNoContent, map[string]interface{}{"message": "Data berhasil dihapus"})
 }
 

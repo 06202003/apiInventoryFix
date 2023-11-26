@@ -41,7 +41,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 	createHistoryPemakaian(usage, "", usage.EmployeeID, "", usage.IdRuang)
 
-	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data Pemakaian Berhasil Dibuat"})
+	helper.ResponseJSON(w, http.StatusCreated, map[string]interface{}{"message": "Data Pemakaian Berhasil Dibuat"})
 }
 
 func Update(w http.ResponseWriter, r *http.Request) {
@@ -54,7 +54,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var oldUsage models.Usage
-	models.DB.First(&oldUsage, "kode_aset = ?", id)
+	models.DB.First(&oldUsage, "id_pemakaian = ?", id)
 
 	
 
@@ -65,7 +65,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 
 	createHistoryPemakaian(oldUsage, oldUsage.EmployeeID, usage.EmployeeID, oldUsage.IdRuang, usage.IdRuang)
 
-	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data berhasil diperbarui"})
+	helper.ResponseJSON(w, http.StatusAccepted, map[string]interface{}{"message": "Data berhasil diperbarui"})
 }
 
 func Delete(w http.ResponseWriter, r *http.Request) {
@@ -84,7 +84,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data berhasil dihapus"})
+	helper.ResponseJSON(w, http.StatusNoContent, map[string]interface{}{"message": "Data berhasil dihapus"})
 }
 
 func createHistoryPemakaian(usage models.Usage, oldEmployeeID, newEmployeeID, oldIdRuang, newIdRuang string) {
