@@ -12,6 +12,7 @@ import (
 	"github.com/06202003/apiInventory/controllers/inventorycontroller"
 	"github.com/06202003/apiInventory/controllers/reporthistorypemakaiancontroller"
 	"github.com/06202003/apiInventory/controllers/reporthistoryperbaikancontroller"
+	"github.com/06202003/apiInventory/controllers/reporthistorykerusakancontroller"
 	"github.com/06202003/apiInventory/controllers/roomcontroller"
 	"github.com/06202003/apiInventory/controllers/locationcontroller"
 	"github.com/06202003/apiInventory/controllers/usagecontroller"
@@ -65,6 +66,12 @@ func main() {
 	api.HandleFunc("/repairHistories/{id}", reporthistoryperbaikancontroller.Update).Methods("PUT")
 	api.HandleFunc("/repairHistories/{id}", reporthistoryperbaikancontroller.Delete).Methods("DELETE")
 
+	api.HandleFunc("/problemHistories", reporthistorykerusakancontroller.Index).Methods("GET")
+	api.HandleFunc("/problemHistories/{id}", reporthistorykerusakancontroller.Show).Methods("GET")
+	api.HandleFunc("/problemHistories", reporthistorykerusakancontroller.Create).Methods("POST")
+	api.HandleFunc("/problemHistories/{id}", reporthistorykerusakancontroller.Update).Methods("PUT")
+	api.HandleFunc("/problemHistories/{id}", reporthistorykerusakancontroller.Delete).Methods("DELETE")
+
 	api.HandleFunc("/rooms", roomcontroller.Index).Methods("GET")
 	api.HandleFunc("/rooms/{id_ruangan}", roomcontroller.Show).Methods("GET")
 	api.HandleFunc("/rooms", roomcontroller.Create).Methods("POST")
@@ -76,6 +83,8 @@ func main() {
 	api.HandleFunc("/locations", locationcontroller.Create).Methods("POST")
 	api.HandleFunc("/locations/{id_lokasi}", locationcontroller.Update).Methods("PUT")
 	api.HandleFunc("/locations/{id_lokasi}", locationcontroller.Delete).Methods("DELETE")
+
+	
 
 	api.Use(middlewares.JWTMiddleware)
 

@@ -57,12 +57,12 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	models.DB.First(&oldUsage, "id_pemakaian = ?", id)
 
 	
-
 	if models.DB.Model(&models.Usage{}).Where("id_pemakaian = ?", id).Updates(&usage).RowsAffected == 0 {
 		helper.ResponseJSON(w, http.StatusBadRequest, map[string]string{"message": "Gagal memperbarui pemakaian"})
 		return
 	}
 
+	
 	createHistoryPemakaian(oldUsage, oldUsage.EmployeeID, usage.EmployeeID, oldUsage.IdRuang, usage.IdRuang)
 
 	helper.ResponseJSON(w, http.StatusAccepted, map[string]interface{}{"message": "Data berhasil diperbarui"})
@@ -102,3 +102,8 @@ func createHistoryPemakaian(usage models.Usage, oldEmployeeID, newEmployeeID, ol
 	// Create a new history pemakaian record
 	models.DB.Create(&historyPemakaian)
 }
+
+
+
+// View By Room
+// View By Pemakaian Karyawan

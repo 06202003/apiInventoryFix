@@ -28,3 +28,5 @@ type Inventory struct {
 func (Inventory) TableName() string {
 	return "inventory"
 }
+
+// AssetCode --> auto increment singkatan
