@@ -204,5 +204,21 @@ func GenerateIDPemakaian(categoryID string, lastUsage models.Usage) string {
 	return fmt.Sprintf("%s-%03d", categoryID, newIndex)
 }
 
-// View By Room
-// View By Pemakaian Karyawan
+func ViewByRoom(w http.ResponseWriter, r *http.Request) {
+	idRuang := mux.Vars(r)["id_ruangan"]
+
+	var usages []models.Usage
+	models.DB.Debug().Preload("Employee").Preload("Inventory").Preload("Inventory.Category").Preload("Room").Preload("Room.Location").Find(&usages, "id_ruangan = ?", idRuang)
+
+	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"usages": usages})
+}
+
+// ViewByEmployee returns a list of usages filtered by employee ID.
+func ViewByEmployee(w http.ResponseWriter, r *http.Request) {
+	idKaryawan := mux.Vars(r)["nomor_induk"]
+
+	var usages []models.Usage
+	models.DB.Debug().Preload("Employee").Preload("Inventory").Preload("Inventory.Category").Preload("Room").Preload("Room.Location").Find(&usages, "nomor_induk = ?", idKaryawan)
+
+	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"usages": usages})
+}

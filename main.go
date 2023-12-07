@@ -56,6 +56,9 @@ func main() {
 	api.HandleFunc("/usages/{id_pemakaian}", usagecontroller.Update).Methods("PUT")
 	api.HandleFunc("/usages/{id_pemakaian}", usagecontroller.Delete).Methods("DELETE")
 
+	// New routes for viewing usages by room and by employee
+	api.HandleFunc("/Usageroom/{id_ruangan}", usagecontroller.ViewByRoom).Methods("GET")
+	api.HandleFunc("/Usageemployee/{nomor_induk}", usagecontroller.ViewByEmployee).Methods("GET")
 
 	api.HandleFunc("/usageHistories", reporthistorypemakaiancontroller.Index).Methods("GET")
 	api.HandleFunc("/usageHistories/{id}", reporthistorypemakaiancontroller.Show).Methods("GET")
