@@ -39,6 +39,11 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := updateUsageStatusThroughDamageRecord(reportHistoryPerbaikan.IdHistoryKerusakan, "rusak"); err != nil {
+        helper.ResponseJSON(w, http.StatusInternalServerError, map[string]string{"message": "Failed to update usage status"})
+        return
+    }
+
 	if err := models.DB.Create(&reportHistoryPerbaikan).Error; err != nil {
 		helper.ResponseJSON(w, http.StatusInternalServerError, map[string]string{"message": "Gagal membuat history perbaikan"})
 		return
@@ -65,28 +70,32 @@ func Update(w http.ResponseWriter, r *http.Request) {
 }
 
 func Delete(w http.ResponseWriter, r *http.Request) {
-    var reportHistoryPerbaikan models.ReportHistoryPerbaikan
-    id := mux.Vars(r)["id"]
+	var reportHistoryPerbaikan models.ReportHistoryPerbaikan
+	id := mux.Vars(r)["id"]
 
-    if err := models.DB.First(&reportHistoryPerbaikan, "id = ?", id).Error; err != nil {
-        helper.ResponseJSON(w, http.StatusNotFound, map[string]string{"message": "Data not found"})
-        return
-    }
+	if err := models.DB.First(&reportHistoryPerbaikan, "id = ?", id).Error; err != nil {
+		helper.ResponseJSON(w, http.StatusNotFound, map[string]string{"message": "Data not found"})
+		return
+	}
 
-    // Delete the repair record, which will automatically delete the corresponding damage record
-    if err := models.DB.Delete(&reportHistoryPerbaikan).Error; err != nil {
-        helper.ResponseJSON(w, http.StatusInternalServerError, map[string]string{"message": "Failed to delete history perbaikan"})
-        return
-    }
+	// Store the ID of the associated damage record
+	idHistoryKerusakan := reportHistoryPerbaikan.IdHistoryKerusakan
 
-    // Now, update the status of the associated usage item to "baik" using the corresponding damage record
-    if err := updateUsageStatusThroughDamageRecord(reportHistoryPerbaikan.IdHistoryKerusakan, "baik"); err != nil {
-        helper.ResponseJSON(w, http.StatusInternalServerError, map[string]string{"message": "Failed to update usage status"})
-        return
-    }
+	// Delete the repair record, which will automatically delete the corresponding damage record
+	if err := models.DB.Delete(&reportHistoryPerbaikan).Error; err != nil {
+		helper.ResponseJSON(w, http.StatusInternalServerError, map[string]string{"message": "Failed to delete history perbaikan"})
+		return
+	}
 
-    helper.ResponseJSON(w, http.StatusNoContent, map[string]interface{}{"message": "Data deleted successfully"})
+	// Now, update the status of the associated usage item to "baik" using the corresponding damage record
+	if err := updateUsageStatusThroughDamageRecord(idHistoryKerusakan, "baik"); err != nil {
+		helper.ResponseJSON(w, http.StatusInternalServerError, map[string]string{"message": "Failed to update usage status"})
+		return
+	}
+
+	helper.ResponseJSON(w, http.StatusNoContent, map[string]interface{}{"message": "Data deleted successfully"})
 }
+
 
 // Function to update the usage status through the corresponding damage record
 func updateUsageStatusThroughDamageRecord(idHistoryKerusakan string, status string) error {
