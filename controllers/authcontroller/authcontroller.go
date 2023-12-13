@@ -124,8 +124,8 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := map[string]string{"message": "Sukses membuat akun"}
-	helper.ResponseJSON(w, http.StatusOK, response)
+	response := map[string]string{"message": "Successfully created an account"}
+	helper.ResponseJSON(w, http.StatusCreated, response)
 }
 
 
