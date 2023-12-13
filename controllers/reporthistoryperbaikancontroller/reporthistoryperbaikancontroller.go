@@ -20,15 +20,15 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func Show(w http.ResponseWriter, r *http.Request) {
-	var reportHistory models.ReportHistoryPerbaikan
-	id := mux.Vars(r)["id"]
+	var reportHistories models.ReportHistoryPerbaikan
+	id := mux.Vars(r)["id_perbaikan"]
 
-	if err := models.DB.Preload("ReportHistoryKerusakan.Usage").Preload("ReportHistoryKerusakan.Usage.Inventory").Preload("ReportHistoryKerusakan.Usage.Inventory.Category").Preload("ReportHistoryKerusakan.Usage.Room").Preload("ReportHistoryKerusakan.Usage.Room.Location").Preload("ReportHistoryKerusakan.Usage.Employee").First(&reportHistory, id).Error; err != nil {
+	if err := models.DB.Preload("ReportHistoryKerusakan.Usage").Preload("ReportHistoryKerusakan.Usage.Inventory").Preload("ReportHistoryKerusakan.Usage.Inventory.Category").Preload("ReportHistoryKerusakan.Usage.Room").Preload("ReportHistoryKerusakan.Usage.Room.Location").Preload("ReportHistoryKerusakan.Usage.Employee").First(&reportHistories, "id_perbaikan = ?", id).Error; err != nil {
 		helper.ResponseJSON(w, http.StatusNotFound, map[string]string{"message": "history perbaikan tidak ditemukan"})
 		return
 	}
 
-	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"Perbaikan": reportHistory})
+	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"Perbaikan": reportHistories})
 }
 
 func Create(w http.ResponseWriter, r *http.Request) {
@@ -54,14 +54,14 @@ func Create(w http.ResponseWriter, r *http.Request) {
 
 func Update(w http.ResponseWriter, r *http.Request) {
 	var reportHistoryPerbaikan models.ReportHistoryPerbaikan
-	id := mux.Vars(r)["id"]
+	id := mux.Vars(r)["id_perbaikan"]
 
 	if err := json.NewDecoder(r.Body).Decode(&reportHistoryPerbaikan); err != nil {
 		helper.ResponseJSON(w, http.StatusBadRequest, map[string]string{"message": err.Error()})
 		return
 	}
 
-	if err := models.DB.Model(&reportHistoryPerbaikan).Where("id = ?", id).Updates(&reportHistoryPerbaikan).Error; err != nil {
+	if err := models.DB.Model(&reportHistoryPerbaikan).Where("id_perbaikan = ?", id).Updates(&reportHistoryPerbaikan).Error; err != nil {
 		helper.ResponseJSON(w, http.StatusBadRequest, map[string]string{"message": "Gagal memperbarui history perbaikan"})
 		return
 	}
@@ -71,9 +71,9 @@ func Update(w http.ResponseWriter, r *http.Request) {
 
 func Delete(w http.ResponseWriter, r *http.Request) {
 	var reportHistoryPerbaikan models.ReportHistoryPerbaikan
-	id := mux.Vars(r)["id"]
+	id := mux.Vars(r)["id_perbaikan"]
 
-	if err := models.DB.First(&reportHistoryPerbaikan, "id = ?", id).Error; err != nil {
+	if err := models.DB.First(&reportHistoryPerbaikan, "id_perbaikan = ?", id).Error; err != nil {
 		helper.ResponseJSON(w, http.StatusNotFound, map[string]string{"message": "Data not found"})
 		return
 	}
