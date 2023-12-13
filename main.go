@@ -64,10 +64,10 @@ func main() {
 	api.HandleFunc("/usageHistories/{id}", reporthistorypemakaiancontroller.Show).Methods("GET")
 
 	api.HandleFunc("/repairHistories", reporthistoryperbaikancontroller.Index).Methods("GET")
-	api.HandleFunc("/repairHistories/{id}", reporthistoryperbaikancontroller.Show).Methods("GET")
+	api.HandleFunc("/repairHistories/{id_perbaikan}", reporthistoryperbaikancontroller.Show).Methods("GET")
 	api.HandleFunc("/repairHistories", reporthistoryperbaikancontroller.Create).Methods("POST")
-	api.HandleFunc("/repairHistories/{id}", reporthistoryperbaikancontroller.Update).Methods("PUT")
-	api.HandleFunc("/repairHistories/{id}", reporthistoryperbaikancontroller.Delete).Methods("DELETE")
+	api.HandleFunc("/repairHistories/{id_perbaikan}", reporthistoryperbaikancontroller.Update).Methods("PUT")
+	api.HandleFunc("/repairHistories/{id_perbaikan}", reporthistoryperbaikancontroller.Delete).Methods("DELETE")
 
 	api.HandleFunc("/problemHistories", reporthistorykerusakancontroller.Index).Methods("GET")
 	api.HandleFunc("/problemHistories/{id}", reporthistorykerusakancontroller.Show).Methods("GET")
