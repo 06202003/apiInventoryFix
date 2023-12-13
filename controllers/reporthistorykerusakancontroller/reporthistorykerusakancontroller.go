@@ -23,7 +23,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	var reportkerusakanHistories models.ReportHistoryKerusakan
 	id := mux.Vars(r)["id"]
 
-	if err := models.DB.Preload("Usage").Preload("Usage.Inventory").Preload("Usage.Inventory.Category").Preload("Usage.Room").Preload("Usage.Room.Location").Preload("Usage.Employee").First(&reportkerusakanHistories, id).Error; err != nil {
+	if err := models.DB.Preload("Usage").Preload("Usage.Inventory").Preload("Usage.Inventory.Category").Preload("Usage.Room").Preload("Usage.Room.Location").Preload("Usage.Employee").First(&reportkerusakanHistories, "id = ?", id).Error; err != nil {
 		helper.ResponseJSON(w, http.StatusNotFound, map[string]string{"message": "history kerusakan tidak ditemukan"})
 		return
 	}
