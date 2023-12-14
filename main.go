@@ -97,6 +97,17 @@ func main() {
 
 	fmt.Printf("App Version %s\n", version)
 	fmt.Printf("Happy Hacking 🧑‍💻")
+	fmt.Printf("Happy Hacking 🧑‍💻")
+	fmt.Printf(`
+	
+Made by
+Yezekiel David Setiawan
+
+Supported by
+Cristianto Tri Arthurito
+Laurentius Gusti Ontoseno Panata Yudha
+	`)
+
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
 
