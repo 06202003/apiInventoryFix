@@ -35,7 +35,7 @@ func Show(w http.ResponseWriter, r *http.Request) {
     var category models.Category
     if err := models.DB.First(&category, "id_kategori = ?", id).Error; err != nil {
         // Handling the case where the category is not found
-        helper.ResponseJSON(w, http.StatusNotFound, map[string]string{"message": "Data tidak ditemukan"})
+        helper.ResponseJSON(w, http.StatusNotFound, map[string]string{"message": "Kategori tidak ditemukan"})
         return
     }
 
@@ -85,7 +85,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
     }
 
     // Responding with the updated category in the JSON format
-    helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data Berhasil Diperbaharui"})
+    helper.ResponseJSON(w, http.StatusAccepted, map[string]interface{}{"message": "Data Berhasil Diperbaharui"})
 }
 
 
@@ -108,5 +108,5 @@ func Delete(w http.ResponseWriter, r *http.Request) {
     }
 
     // Responding with the success message in the JSON format
-    helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data berhasil dihapus"})
+    helper.ResponseJSON(w, http.StatusNoContent, map[string]interface{}{"message": "Data berhasil dihapus"})
 }

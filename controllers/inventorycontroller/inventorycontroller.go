@@ -3,7 +3,6 @@ package inventorycontroller
 import (
 	"encoding/json"
 	"net/http"
-	"time"
 	"github.com/06202003/apiInventory/helper"
 	"github.com/06202003/apiInventory/models"
 	"github.com/gorilla/mux"
@@ -11,8 +10,8 @@ import (
 
 func Index(w http.ResponseWriter, r *http.Request) {
 	var inventory []models.Inventory
-	models.DB.Debug().Preload("Room").Preload("Employee").Preload("Category").Find(&inventory)
-	models.DB.Preload("Room").Preload("Employee").Preload("Category").Find(&inventory)
+	models.DB.Debug().Preload("Category").Find(&inventory)
+	models.DB.Preload("Category").Find(&inventory)
 	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"inventory": inventory})
 }
 
@@ -20,8 +19,8 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	var inventory models.Inventory
 	id := mux.Vars(r)["kode_aset"]
 
-	models.DB.Debug().Preload("Room").Preload("Employee").Preload("Category").Find(&inventory, "kode_aset = ?", id)
-	if err := models.DB.Preload("Room").Preload("Employee").Preload("Category").Where("kode_aset = ?", id).First(&inventory).Error; err != nil {
+	models.DB.Debug().Preload("Category").Find(&inventory, "kode_aset = ?", id)
+	if err := models.DB.Preload("Category").Where("kode_aset = ?", id).First(&inventory).Error; err != nil {
 		helper.ResponseJSON(w, http.StatusNotFound, map[string]string{"message": "Aset tidak ditemukan"})
 		return
 	}
@@ -67,10 +66,8 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	// Create a new inventory record
 	models.DB.Create(&inventory)
 
-	// Create a new history pemakaian record
-	createHistoryPemakaian(inventory, "", inventory.EmployeeID, "", inventory.RoomID)
-
-	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Aset Berhasil Dibuat"})
+	
+	helper.ResponseJSON(w, http.StatusCreated, map[string]interface{}{"message": "Aset Berhasil Dibuat"})
 }
 
 
@@ -84,9 +81,6 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get the old inventory record
-	var oldInventory models.Inventory
-	models.DB.First(&oldInventory, "kode_aset = ?", id)
 
 	// Update the inventory record
 	if models.DB.Model(&models.Inventory{}).Where("kode_aset = ?", id).Updates(&inventory).RowsAffected == 0 {
@@ -94,10 +88,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create a new history pemakaian record
-	createHistoryPemakaian(oldInventory, oldInventory.EmployeeID, inventory.EmployeeID, oldInventory.RoomID, inventory.RoomID)
-
-	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data Berhasil Diperbaharui"})
+	helper.ResponseJSON(w, http.StatusAccepted, map[string]interface{}{"message": "Data Berhasil Diperbaharui"})
 }
 
 func Delete(w http.ResponseWriter, r *http.Request) {
@@ -114,21 +105,6 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data berhasil dihapus"})
+	helper.ResponseJSON(w, http.StatusNoContent, map[string]interface{}{"message": "Data berhasil dihapus"})
 }
 
-func createHistoryPemakaian(inventory models.Inventory, oldEmployeeID, newEmployeeID, oldRoomID, newRoomID string) {
-	historyPemakaian := models.ReportHistoryPemakaian{
-		OldEmployeeID: oldEmployeeID,
-		NewEmployeeID: newEmployeeID,
-		OldRoom:       oldRoomID,
-		NewRoom:       newRoomID,
-		UsageDate:     inventory.UpdatedAt,
-		AssetCode:     inventory.AssetCode,
-		CreatedAt:     time.Now().Format("2006-01-02 15:04:05"),
-		UpdatedAt:     time.Now().Format("2006-01-02 15:04:05"),
-	}
-
-	// Create a new history pemakaian record
-	models.DB.Create(&historyPemakaian)
-}
