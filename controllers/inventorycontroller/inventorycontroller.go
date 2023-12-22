@@ -3,6 +3,9 @@ package inventorycontroller
 import (
 	"encoding/json"
 	"net/http"
+	"fmt"
+	"strings"
+	"strconv"
 	"github.com/06202003/apiInventory/helper"
 	"github.com/06202003/apiInventory/models"
 	"github.com/gorilla/mux"
@@ -45,6 +48,31 @@ func Show(w http.ResponseWriter, r *http.Request) {
 // 	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"message": "Data Berhasil Dibuat"})
 // }
 
+// func Create(w http.ResponseWriter, r *http.Request) {
+// 	var inventory models.Inventory
+
+// 	if err := json.NewDecoder(r.Body).Decode(&inventory); err != nil {
+// 		helper.ResponseJSON(w, http.StatusBadRequest, map[string]string{"message": err.Error()})
+// 		return
+// 	}
+
+// 	// Calculate Depreciation
+// 	depreciation := (inventory.Price - (inventory.Price / 4)) / inventory.UsefulLife
+
+// 	// Calculate Yearly values
+// 	inventory.Depreciation = depreciation
+// 	inventory.Year1 = inventory.Price - depreciation
+// 	inventory.Year2 = inventory.Year1 - depreciation
+// 	inventory.Year3 = inventory.Year2 - depreciation
+// 	inventory.Year4 = inventory.Year3 - depreciation
+
+// 	// Create a new inventory record
+// 	models.DB.Create(&inventory)
+
+	
+// 	helper.ResponseJSON(w, http.StatusCreated, map[string]interface{}{"message": "Aset Berhasil Dibuat"})
+// }
+
 func Create(w http.ResponseWriter, r *http.Request) {
 	var inventory models.Inventory
 
@@ -63,10 +91,12 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	inventory.Year3 = inventory.Year2 - depreciation
 	inventory.Year4 = inventory.Year3 - depreciation
 
+	// Generate kode_aset based on brand and category ID
+	inventory.AssetCode = GenerateKodeAset(inventory.Brand, inventory.CategoryID)
+
 	// Create a new inventory record
 	models.DB.Create(&inventory)
 
-	
 	helper.ResponseJSON(w, http.StatusCreated, map[string]interface{}{"message": "Aset Berhasil Dibuat"})
 }
 
@@ -106,5 +136,44 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	}
 
 	helper.ResponseJSON(w, http.StatusNoContent, map[string]interface{}{"message": "Data berhasil dihapus"})
+}
+
+
+func GenerateKodeAset(brand, categoryID string) string {
+	// Convert brand and category ID to uppercase and replace spaces with underscores
+	brand = strings.ToUpper(strings.ReplaceAll(brand, " ", "_"))
+	categoryID = strings.ToUpper(strings.ReplaceAll(categoryID, " ", "_"))
+
+	// Use the format "{brand}_{categoryID}_{index}"
+	lastUsage := getLastUsageByBrandAndCategory(brand, categoryID)
+	index := getIndexFromKodeAset(lastUsage.AssetCode)
+
+	// Increment the index
+	index++
+
+	// Format the new kode_aset
+	return fmt.Sprintf("%s_%s_%03d", brand, categoryID, index)
+}
+
+// getLastUsageByBrandAndCategory retrieves the last usage record for a given brand and categoryID.
+func getLastUsageByBrandAndCategory(brand, categoryID string) models.Inventory {
+	var lastUsage models.Inventory
+	models.DB.Order("kode_aset DESC").First(&lastUsage, "brand = ? AND category_id = ?", brand, categoryID)
+	return lastUsage
+}
+
+// getIndexFromKodeAset extracts the index part from the kode_aset.
+func getIndexFromKodeAset(kodeAset string) int {
+	parts := strings.Split(kodeAset, "_")
+	if len(parts) < 3 {
+		return 0
+	}
+
+	index, err := strconv.Atoi(parts[2])
+	if err != nil {
+		return 0
+	}
+
+	return index
 }
 

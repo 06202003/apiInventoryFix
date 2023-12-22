@@ -6,6 +6,7 @@ import (
 	"time"
 	"fmt"
 	"strconv"
+	"strings"
 	"github.com/gorilla/mux"
 	"github.com/06202003/apiInventory/helper"
 	"github.com/06202003/apiInventory/models"
@@ -31,20 +32,6 @@ func Show(w http.ResponseWriter, r *http.Request) {
 	helper.ResponseJSON(w, http.StatusOK, map[string]interface{}{"usage": usage})
 }
 
-// func Create(w http.ResponseWriter, r *http.Request) {
-// 	var usage models.Usage
-
-// 	if err := json.NewDecoder(r.Body).Decode(&usage); err != nil {
-// 		helper.ResponseJSON(w, http.StatusBadRequest, map[string]string{"message": err.Error()})
-// 		return
-// 	}
-
-// 	models.DB.Create(&usage)
-
-// 	createHistoryPemakaian(usage, "", usage.EmployeeID, "", usage.IdRuang)
-
-// 	helper.ResponseJSON(w, http.StatusCreated, map[string]interface{}{"message": "Data Pemakaian Berhasil Dibuat"})
-// }
 
 func Create(w http.ResponseWriter, r *http.Request) {
 	var usage models.Usage
@@ -70,12 +57,9 @@ func Create(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		// Fetch the category ID from the inventory
-		categoryID := inventory.CategoryID
-
-		// Generate the new IDPemakaian
-		lastUsage := getLastUsageByCategory(categoryID)
-		usage.IdPemakaian = GenerateIDPemakaian(categoryID, lastUsage)
+		// Generate the new IDPemakaian based on the AssetCode
+		lastUsage := getLastUsageByAssetCode(usage.AssetCode)
+		usage.IdPemakaian = GenerateIDPemakaian(usage.AssetCode, lastUsage)
 	}
 
 	// Create the new entry
@@ -129,12 +113,11 @@ func isUsageModified(oldUsage, newUsage models.Usage) bool {
 }
 
 // getLastUsageByCategory retrieves the last usage record for a given categoryID.
-func getLastUsageByCategory(categoryID string) models.Usage {
+func getLastUsageByAssetCode(assetCode string) models.Usage {
 	var lastUsage models.Usage
-	models.DB.Order("id_pemakaian DESC").First(&lastUsage, "id_ruangan = ?", categoryID)
+	models.DB.Order("id_pemakaian DESC").First(&lastUsage, "kode_aset = ?", assetCode)
 	return lastUsage
 }
-
 
 func Delete(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id_pemakaian"]
@@ -187,22 +170,32 @@ func createHistoryPemakaian(oldUsage, newUsage models.Usage) {
 }
 
 
-func GenerateIDPemakaian(categoryID string, lastUsage models.Usage) string {
+func GenerateIDPemakaian(assetCode string, lastUsage models.Usage) string {
 	if lastUsage.IdPemakaian == "" {
-		return fmt.Sprintf("%s-001", categoryID)
+		return fmt.Sprintf("%s-001", assetCode)
 	}
 
-	// Extract the last three characters after the '-' and convert to int
-	lastIndex, err := strconv.Atoi(lastUsage.IdPemakaian[len(categoryID)+1:])
+	// Find the position of the last '-' in the ID
+	lastDashIndex := strings.LastIndex(lastUsage.IdPemakaian, "-")
+	if lastDashIndex == -1 {
+		return "" // or handle the error accordingly
+	}
+
+	// Extract the index part after the last '-'
+	indexPart := lastUsage.IdPemakaian[lastDashIndex+1:]
+
+	// Convert the index to int
+	lastIndex, err := strconv.Atoi(indexPart)
 	if err != nil {
 		return "" // or handle the error accordingly
 	}
 
 	newIndex := lastIndex + 1
 
-	// Format the new index with leading zeros and concatenate with the category ID
-	return fmt.Sprintf("%s-%03d", categoryID, newIndex)
+	// Format the new index with leading zeros and concatenate with the asset code
+	return fmt.Sprintf("%s-%03d", assetCode, newIndex)
 }
+
 
 func ViewByRoom(w http.ResponseWriter, r *http.Request) {
 	idRuang := mux.Vars(r)["id_ruangan"]
