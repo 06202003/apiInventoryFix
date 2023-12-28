@@ -88,14 +88,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	helper.ResponseJSON(w, http.StatusOK, response)
 }
 
-func IsUserRegistered(email string) bool {
-	var user models.User
-	if err := models.DB.Where("email = ?", email).First(&user).Error; err != nil {
-		return false // User not found
-	}
-	return true // User found
-}
-
 
 func Register(w http.ResponseWriter, r *http.Request) {
 	// retrieve json input
@@ -107,13 +99,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer r.Body.Close()
-
-	// Check if user is already registered
-	if IsUserRegistered(userInput.Email) {
-		response := map[string]string{"message": "User already registered"}
-		helper.ResponseJSON(w, http.StatusConflict, response)
-		return
-	}
 
 	// static salt
 	staticSalt := "WITAsik"
