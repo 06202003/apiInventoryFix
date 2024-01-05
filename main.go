@@ -1,21 +1,26 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
-	"fmt"
+
 	"github.com/06202003/apiInventory/middlewares"
 
 	"github.com/06202003/apiInventory/controllers/authcontroller"
 	"github.com/06202003/apiInventory/controllers/categorycontroller"
 	"github.com/06202003/apiInventory/controllers/employeecontroller"
 	"github.com/06202003/apiInventory/controllers/inventorycontroller"
+	"github.com/06202003/apiInventory/controllers/locationcontroller"
+	"github.com/06202003/apiInventory/controllers/logkerusakancontroller"
+	"github.com/06202003/apiInventory/controllers/portfoliocontroller"
+	"github.com/06202003/apiInventory/controllers/portfolioemployeecontroller"
+	"github.com/06202003/apiInventory/controllers/reporthistorykerusakancontroller"
 	"github.com/06202003/apiInventory/controllers/reporthistorypemakaiancontroller"
 	"github.com/06202003/apiInventory/controllers/reporthistoryperbaikancontroller"
-	"github.com/06202003/apiInventory/controllers/reporthistorykerusakancontroller"
-	"github.com/06202003/apiInventory/controllers/logkerusakancontroller"
 	"github.com/06202003/apiInventory/controllers/roomcontroller"
-	"github.com/06202003/apiInventory/controllers/locationcontroller"
+	"github.com/06202003/apiInventory/controllers/skillcontroller"
+	"github.com/06202003/apiInventory/controllers/skillemployeecontroller"
 	"github.com/06202003/apiInventory/controllers/usagecontroller"
 	"github.com/06202003/apiInventory/models"
 
@@ -34,7 +39,7 @@ func main() {
 	r.HandleFunc("/logout", authcontroller.Logout).Methods("GET")
 
 	api := r.PathPrefix("/api").Subrouter()
-	
+
 	api.HandleFunc("/categories", categorycontroller.Index).Methods("GET")
 	api.HandleFunc("/categories/{id_kategori}", categorycontroller.Show).Methods("GET")
 	api.HandleFunc("/categories", categorycontroller.Create).Methods("POST")
@@ -46,6 +51,33 @@ func main() {
 	api.HandleFunc("/employees", employeecontroller.Create).Methods("POST")
 	api.HandleFunc("/employees/{nomor_induk}", employeecontroller.Update).Methods("PUT")
 	api.HandleFunc("/employees/{nomor_induk}", employeecontroller.Delete).Methods("DELETE")
+	
+
+	api.HandleFunc("/skills", skillcontroller.Index).Methods("GET")
+	api.HandleFunc("/skills/{id_skill}", skillcontroller.Show).Methods("GET")
+	api.HandleFunc("/skills", skillcontroller.Create).Methods("POST")
+	api.HandleFunc("/skills/{id_skill}", skillcontroller.Update).Methods("PUT")
+	api.HandleFunc("/skills/{id_skill}", skillcontroller.Delete).Methods("DELETE")
+
+	api.HandleFunc("/employeeSkills", skillemployeecontroller.Index).Methods("GET")
+	api.HandleFunc("/employeeSkills/{id_skill_employee}", skillemployeecontroller.Show).Methods("GET")
+	api.HandleFunc("/employeeSkills", skillemployeecontroller.Create).Methods("POST")
+	api.HandleFunc("/employeeSkills/{id_skill_employee}", skillemployeecontroller.Update).Methods("PUT")
+	api.HandleFunc("/employeeSkills/{id_skill_employee}", skillemployeecontroller.Delete).Methods("DELETE")
+	api.HandleFunc("/employeeSkills/ViewByEmployeeSkill/{id_skill_employee}", skillemployeecontroller.ViewByEmployeeSkill).Methods("GET")
+	
+	api.HandleFunc("/portfolio", portfoliocontroller.Index).Methods("GET")
+	api.HandleFunc("/portfolio/{id_portfolio}", portfoliocontroller.Show).Methods("GET")
+	api.HandleFunc("/portfolio", portfoliocontroller.Create).Methods("POST")
+	api.HandleFunc("/portfolio/{id_portfolio}", portfoliocontroller.Update).Methods("PUT")
+	api.HandleFunc("/portfolio/{id_portfolio}", portfoliocontroller.Delete).Methods("DELETE")
+
+	api.HandleFunc("/employeePortfolio", portfolioemployeecontroller.Index).Methods("GET")
+	api.HandleFunc("/employeePortfolio/{id_portfolio_employee}", portfolioemployeecontroller.Show).Methods("GET")
+	api.HandleFunc("/employeePortfolio", portfolioemployeecontroller.Create).Methods("POST")
+	api.HandleFunc("/employeePortfolio/{id_portfolio_employee}", portfolioemployeecontroller.Update).Methods("PUT")
+	api.HandleFunc("/employeePortfolio/{id_portfolio_employee}", portfolioemployeecontroller.Delete).Methods("DELETE")
+	api.HandleFunc("/employeePortfolio/ViewByEmployeePortfolio/{id_portfolio_employee}", portfolioemployeecontroller.ViewByEmployeePortfolio).Methods("GET")
 
 	api.HandleFunc("/inventories", inventorycontroller.Index).Methods("GET")
 	api.HandleFunc("/inventories/{kode_aset}", inventorycontroller.Show).Methods("GET")
@@ -60,8 +92,8 @@ func main() {
 	api.HandleFunc("/usages/{id_pemakaian}", usagecontroller.Delete).Methods("DELETE")
 
 	// New routes for viewing usages by room and by employee
-	api.HandleFunc("/usageroom/{id_ruangan}", usagecontroller.ViewByRoom).Methods("GET")
-	api.HandleFunc("/usageemployee/{nomor_induk}", usagecontroller.ViewByEmployee).Methods("GET")
+	api.HandleFunc("/Usageroom/{id_ruangan}", usagecontroller.ViewByRoom).Methods("GET")
+	api.HandleFunc("/Usageemployee/{nomor_induk}", usagecontroller.ViewByEmployee).Methods("GET")
 
 	api.HandleFunc("/usageHistories", reporthistorypemakaiancontroller.Index).Methods("GET")
 	api.HandleFunc("/usageHistories/{id}", reporthistorypemakaiancontroller.Show).Methods("GET")
@@ -69,17 +101,17 @@ func main() {
 	api.HandleFunc("/logProblem", logkerusakancontroller.Index).Methods("GET")
 	api.HandleFunc("/logProblem/{id}", logkerusakancontroller.Show).Methods("GET")
 
-	api.HandleFunc("/repair", reporthistoryperbaikancontroller.Index).Methods("GET")
-	api.HandleFunc("/repair/{id_perbaikan}", reporthistoryperbaikancontroller.Show).Methods("GET")
-	api.HandleFunc("/repair", reporthistoryperbaikancontroller.Create).Methods("POST")
-	api.HandleFunc("/repair/{id_perbaikan}", reporthistoryperbaikancontroller.Update).Methods("PUT")
-	api.HandleFunc("/repair/{id_perbaikan}", reporthistoryperbaikancontroller.Delete).Methods("DELETE")
+	api.HandleFunc("/repairHistories", reporthistoryperbaikancontroller.Index).Methods("GET")
+	api.HandleFunc("/repairHistories/{id_perbaikan}", reporthistoryperbaikancontroller.Show).Methods("GET")
+	api.HandleFunc("/repairHistories", reporthistoryperbaikancontroller.Create).Methods("POST")
+	api.HandleFunc("/repairHistories/{id_perbaikan}", reporthistoryperbaikancontroller.Update).Methods("PUT")
+	api.HandleFunc("/repairHistories/{id_perbaikan}", reporthistoryperbaikancontroller.Delete).Methods("DELETE")
 
-	api.HandleFunc("/problem", reporthistorykerusakancontroller.Index).Methods("GET")
-	api.HandleFunc("/problem/{id}", reporthistorykerusakancontroller.Show).Methods("GET")
-	api.HandleFunc("/problem", reporthistorykerusakancontroller.Create).Methods("POST")
-	api.HandleFunc("/problem/{id}", reporthistorykerusakancontroller.Update).Methods("PUT")
-	api.HandleFunc("/problem/{id}", reporthistorykerusakancontroller.Delete).Methods("DELETE")
+	api.HandleFunc("/problemHistories", reporthistorykerusakancontroller.Index).Methods("GET")
+	api.HandleFunc("/problemHistories/{id}", reporthistorykerusakancontroller.Show).Methods("GET")
+	api.HandleFunc("/problemHistories", reporthistorykerusakancontroller.Create).Methods("POST")
+	api.HandleFunc("/problemHistories/{id}", reporthistorykerusakancontroller.Update).Methods("PUT")
+	api.HandleFunc("/problemHistories/{id}", reporthistorykerusakancontroller.Delete).Methods("DELETE")
 
 	api.HandleFunc("/rooms", roomcontroller.Index).Methods("GET")
 	api.HandleFunc("/rooms/{id_ruangan}", roomcontroller.Show).Methods("GET")
@@ -93,7 +125,6 @@ func main() {
 	api.HandleFunc("/locations/{id_lokasi}", locationcontroller.Update).Methods("PUT")
 	api.HandleFunc("/locations/{id_lokasi}", locationcontroller.Delete).Methods("DELETE")
 
-	
 
 	api.Use(middlewares.JWTMiddleware)
 

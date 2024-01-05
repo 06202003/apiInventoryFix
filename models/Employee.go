@@ -1,6 +1,7 @@
 package models
 
 
+
 type Employee struct {
 	EmployeeID string    `gorm:"column:nomor_induk;type:varchar(20);primaryKey" json:"nomor_induk"`
 	ImageURL   string    `gorm:"column:gambar;type:varchar(255)" json:"gambar"`
